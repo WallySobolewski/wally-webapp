@@ -1,0 +1,21 @@
+# create pipeline with some name
+name: wally app containerization pipeline
+# trigger section - when the pipeline should start
+on:
+  push:
+    branches:
+      - "main"
+
+# jobs for performing operations
+jobs:
+  wally-image-build:
+    runs-on: ubuntu-latest
+    # this server will be provisioned by github backend for this job
+    steps:
+      - name: run some basic commands on above server to do verification
+        run: |
+          uname -r
+          whoami
+          cat /etc/os-release
+          docker version
+          docker-compose version
