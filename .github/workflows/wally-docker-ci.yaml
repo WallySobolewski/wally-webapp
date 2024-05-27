@@ -32,9 +32,13 @@ jobs:
           echo "Checking HC page"
           curl --head --silent http://localhost:1984/health.html | head -n 1
       - name: login from runner to docker hub account
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: rebuild image in docker hub format and push it to docker hub
         run: |
-          docker login -u wallysobolewski -p Kedlaw#67
-          docker tag wally-webui:version5 docker.io/wallysobolewski/wally-app:version1
-          docker push docker.io/wallysobolewski/wally-app:version1
-          docker logout
+          echo "this is home work"
+          echo "pls find action workflow"
+          echo "build image in docker hub format and push to docker hub"
           
