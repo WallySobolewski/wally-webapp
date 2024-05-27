@@ -19,3 +19,8 @@ jobs:
           cat /etc/os-release
           docker version
           docker-compose version
+      - name: using pre-designed gh workflow to get copy gitrepo code to runners machine
+        uses: actions/checkout@v4
+      - name: verify github code
+        run: ls -ltra
+          
