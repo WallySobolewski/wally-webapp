@@ -22,5 +22,9 @@ jobs:
       - name: using pre-designed gh workflow to get copy gitrepo code to runners machine
         uses: actions/checkout@v4
       - name: verify github code
-        run: ls -ltra
+        run: |
+          ls -ltra
+          docker-compose up -d
+          sleep 2
+          docker-compose ps
           
