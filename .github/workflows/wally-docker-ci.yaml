@@ -31,4 +31,10 @@ jobs:
         run: |
           echo "Checking HC page"
           curl --head --silent http://localhost:1984/health.html | head -n 1
+      - name: login from runner to docker hub account
+        run: |
+          docker login -u wallysobolewski -p Kedlaw#67
+          docker tag wally-webui:version5 docker.io/wallysobolewski/wally-app:version1
+          docker push docker.io/wallysobolewski/wally-app:version1
+          docker logour
           
