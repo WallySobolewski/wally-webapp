@@ -27,4 +27,6 @@ jobs:
           docker-compose up -d
           sleep 2
           docker-compose ps
+      - name: verify hc page exists
+        run: curl --head --silent http://localhost:1984 | head -n 1
           
