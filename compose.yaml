@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  wally-webui-app:
+    image: wally-webui:version5 # image to be built
+    build: . # location of dockerfile
+    container_name: wally-auto5
+    ports:
+      - 1984:80
