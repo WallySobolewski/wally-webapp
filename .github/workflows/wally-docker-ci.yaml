@@ -4,7 +4,7 @@ name: wally app containerization pipeline
 on:
   push:
     branches:
-      - "main"
+      - "dev"
 
 # jobs for performing operations
 jobs:
@@ -36,9 +36,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: rebuild image in docker hub format and push it to docker hub
-        run: |
-          echo "this is home work"
-          echo "pls find action workflow"
-          echo "build image in docker hub format and push to docker hub"
+      - name: build and push to docker hub
+        uses: docker/build-push-action@v5
+        with:
+          context: . # location of Dockerfile
+          push: true
+          tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wally-newapp:version01
+      - name: docker logout from runner after pushing image
+        run: docker logout
           
