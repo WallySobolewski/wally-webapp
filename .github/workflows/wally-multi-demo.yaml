@@ -55,10 +55,6 @@ jobs:
         run: |
           echo "Checking HC page"
           curl --head --silent http://localhost:1984/health.html | head -n 1
-      - name: pusing above image to ecr
-        run: |
-        or
-        uses:
       - id: ecr-publish
         uses: bitovi/github-actions-ecr-publish@v0.1.0
         with:
