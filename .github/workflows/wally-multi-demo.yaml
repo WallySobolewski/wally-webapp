@@ -23,7 +23,6 @@ jobs:
         run: |
           pwd
           whoami
-          sonar-scanner --version
   wally-build-job:
     runs-on: macos-latest
     needs: wally-sast-job
