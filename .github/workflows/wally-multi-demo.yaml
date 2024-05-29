@@ -61,7 +61,7 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_default_region: us-east-1
-          aws_ecr_repo_name: 751136288263.dkr.ecr.us-east-1.amazonaws.com/bmo-webui-app
+          aws_ecr_repo_name: bmo-webui-app
           image_tag: wallywebuiV2
 
 
