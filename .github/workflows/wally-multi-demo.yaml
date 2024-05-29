@@ -30,6 +30,7 @@ jobs:
             .
             !**/.git*
             !**/*.md
+            !**/.scannerwork
   wally-build-job:
     runs-on: ubuntu-latest
     needs: wally-sast-job
