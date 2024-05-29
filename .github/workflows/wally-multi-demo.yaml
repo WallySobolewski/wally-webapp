@@ -22,30 +22,49 @@ jobs:
         run: |
           pwd
           sonar-scanner.bat -D"sonar.projectKey=wally-multi-demo" -D"sonar.sources=." -D"sonar.host.url=http://44.219.46.64:9000/" -D"sonar.token=sqp_0074b5aeed064dc7fc283433cc79068176f73167"
-
-      # - name: SonarQube Scan
-      #   uses: sonarsource/sonarqube-scan-action@v2.1.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
-      #   with:
-      #     projectBaseDir: .
-      #     args: >
-      #       -Dsonar.projectKey=wally-python-project
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-  # wally-build-job:
-  #   runs-on: ubuntu-latest
-  #   needs: wally-sast-job
-  #   steps:
-  #     - name: login from runner to docker hub account
-  #       uses: docker/login-action@v3
-  #       with:
-  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #         PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-  #     - name: build and push to docker hub
-  #       uses: docker/build-push-action@v5
-  #       with:
-  #         context: . # location of Dockerfile
-  #         push: true
-  #         tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wally-newapp:version01
-  #     - name: docker logout from runner after pushing image
-  #       run: docker logout
+      - name: use upload artifacts # to save and use artifacts in the next job
+        users: actions/upload-artifact@v4
+        with:
+          name: wally-artifact
+          path: |
+            .
+            !**/.git*
+            !**/*.md
+  wally-build-job:
+    runs-on: ubuntu-latest
+    needs: wally-sast-job
+    steps:
+      - name: general checks
+        run: |
+          echo "docker related details"
+          docker version
+          docker-compose --version
+      - name: download artifacts
+        users: actions/download-artifact@v4
+        with:
+          name: wally-artifact
+          path: .
+      - name: docker compose to build and test
+        run: |
+          ls -a
+          docker-compose up -d --build
+          sleep 2
+          docker-compose ps
+      - name: verify HC page by access it using curl
+        run: |
+          echo "Checking HC page"
+          curl --head --silent http://localhost:1984/health.html | head -n 1
+    # steps:
+    #   - name: login from runner to docker hub account
+    #     uses: docker/login-action@v3
+    #     with:
+    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #       PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+    #   - name: build and push to docker hub
+    #     uses: docker/build-push-action@v5
+    #     with:
+    #       context: . # location of Dockerfile
+    #       push: true
+    #       tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wally-newapp:version01
+    #   - name: docker logout from runner after pushing image
+    #     run: docker logout
