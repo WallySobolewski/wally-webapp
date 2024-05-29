@@ -55,6 +55,20 @@ jobs:
         run: |
           echo "Checking HC page"
           curl --head --silent http://localhost:1984/health.html | head -n 1
+      - name: pusing above image to ecr
+        run: |
+        or
+        uses:
+      - id: ecr-publish
+        uses: bitovi/github-actions-ecr-publish@v0.1.0
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_default_region: us-east-1
+          aws_ecr_repo_name: 751136288263.dkr.ecr.us-east-1.amazonaws.com/bmo-webui-app
+          image_tag: wallywebuiV2
+
+
     # steps:
     #   - name: login from runner to docker hub account
     #     uses: docker/login-action@v3
