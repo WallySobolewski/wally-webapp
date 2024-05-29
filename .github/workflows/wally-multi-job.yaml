@@ -1,0 +1,33 @@
+# create pipeline with some name
+name: wally app containerization pipeline
+# trigger section - when the pipeline should start
+on:
+  push:
+    branches:
+      - "dev"
+
+#creating multiple jobs
+jobs:
+  wally-code-checkoutjob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checking only
+        run: |
+          echo "just checking"
+          whoami
+  wally-sast-job:
+    runs-on: self-hosted
+    needs: wally-code-checkoutjob # will wait for this job to finish first
+    steps:
+      - name: checking docker version and sonarscanner
+        run: |
+          pwd
+          whoami
+  wally-build-job:
+    runs-on: macos-latest
+    needs: wally-sast-job
+    steps:
+      - name: just a general message
+        run: |
+          echo "python version checking"
+          python -V
