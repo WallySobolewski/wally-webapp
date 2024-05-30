@@ -55,27 +55,19 @@ jobs:
         run: |
           echo "Checking HC page"
           curl --head --silent http://localhost:1984/health.html | head -n 1
-      - id: ecr-publish
-        uses: bitovi/github-actions-ecr-publish@v0.1.0
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
         with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_default_region: us-east-1
-          aws_ecr_repo_name: bmo-webui-app
-          image_tag: wallywebuiV2
-
-
-    # steps:
-    #   - name: login from runner to docker hub account
-    #     uses: docker/login-action@v3
-    #     with:
-    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #       PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-    #   - name: build and push to docker hub
-    #     uses: docker/build-push-action@v5
-    #     with:
-    #       context: . # location of Dockerfile
-    #       push: true
-    #       tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wally-newapp:version01
-    #   - name: docker logout from runner after pushing image
-    #     run: docker logout
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: build, tag and push docker image to aws ecr
+        env:
+          REGISTRY: 751136288263.dkr.ecr.us-east-1.amazonaws.com
+          REPOSITORY: bmo-webui-app
+          IMAGE_TAG: wallywebuiV2
+        run: |
+          docker image ls
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 751136288263.dkr.ecr.us-east-1.amazonaws.com
+          docker tag wally-webui:version5 751136288263.dkr.ecr.us-east-1.amazonaws.com/bmo-webui-app:wallywebuiV2
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
