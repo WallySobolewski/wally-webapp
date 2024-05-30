@@ -60,3 +60,9 @@ jobs:
         run: |
           echo "please wait while image is getting pushed"
           docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }}
+      - name: check cdk version details
+        run: |
+          node -v
+          npm -v
+          cdk --version
+          aws --version 
