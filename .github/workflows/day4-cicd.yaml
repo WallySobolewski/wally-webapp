@@ -8,7 +8,7 @@ on:
 # jobs for performing operations
 jobs:
   wally-image-build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     # this server will be provisioned by github backend for this job
     steps:
       - name: run some basic commands on above server to do verification
