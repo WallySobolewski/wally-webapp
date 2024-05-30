@@ -38,5 +38,12 @@ jobs:
           docker-compose ps
           sleep 1
           docker-compose logs
-      - name: check trivy installation
-        run: trivy -v
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: 'wallys:bmov1'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
