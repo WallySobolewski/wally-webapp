@@ -41,11 +41,11 @@ jobs:
       - name: Build an image from Dockerfile
         run: |
           cd python-app-secret
-          docker build -t wallys:bmov${{ github.sha }} .
+          docker build -t docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }} .
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'wallys:bmov${{ github.sha }}'
+          image-ref: 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }}'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
@@ -59,4 +59,4 @@ jobs:
       - name: pushing image to docker hub 
         run: |
           echo "please wait while image is getting pushed"
-          docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wally-newapp/wallys:bmov${{ github.sha }}
+          docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }}
