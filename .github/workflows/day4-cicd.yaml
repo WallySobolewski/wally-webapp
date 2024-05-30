@@ -1,0 +1,31 @@
+# create pipeline with some name
+name: day4 cicd pipeline
+# trigger section - when the pipeline should start
+on:
+  push:
+    branches:
+      - "dev"
+# jobs for performing operations
+jobs:
+  wally-image-build:
+    runs-on: self-hosted
+    # this server will be provisioned by github backend for this job
+    steps:
+      - name: run some basic commands on above server to do verification
+        run: |
+          uname -r
+          whoami
+          cat /etc/os-release
+          docker version
+          docker-compose version
+      - name: using pre-designed gh workflow to get copy gitrepo code to runners machine
+        uses: actions/checkout@v4
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v2.1.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
+        with:
+          projectBaseDir: ./python-app-secret
+          args: >
+            -Dsonar.projectKey=wally-sq-project
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}

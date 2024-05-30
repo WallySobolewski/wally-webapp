@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  wallys:
+    image: wallys:bmov1
+    build: .
+    container_name: wallyspyc1
+    tty: true
