@@ -80,6 +80,10 @@ jobs:
           cd ecs
           npx cdk bootstrap
           npx cdk deploy --no-rollback --require-approval never
+      - name: destroy cdk
+        run: |
+          cd ecs
+          npx cdk destroy --force
       # - name: check cdk version details
       #   run: |
       #     node -v
