@@ -7,7 +7,7 @@ on:
       - "dev"
 # jobs for performing operations
 jobs:
-  wally-image-build:
+  wally-job1:
     runs-on: ubuntu-latest
     # this server will be provisioned by github backend for this job
     steps:
@@ -23,9 +23,10 @@ jobs:
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v2.1.0 # Ex: v2.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
         with:
-          projectBaseDir: ./python-app-secret
+          projectBaseDir: .
           args: >
             -Dsonar.projectKey=wally-sq-project
+            -Dsonar.exclusions=ecr/**,wally-newapp/**,Dockerfile,compose.yaml,*.html
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
@@ -60,12 +61,32 @@ jobs:
         run: |
           echo "please wait while image is getting pushed"
           docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }}
+      - name: upload artifacts # to save and use artifacts in the next job
+        uses: actions/upload-artifact@v4
+        with:
+          name: job1-artifact
+          path: |
+            ./ecs
+            ./python-app-secret
+            !**/.git*
+            !**/*.md
+            !**/.scannerwork
+
+  wally-job2:
+    runs-on: ubuntu-latest
+    steps:     
+      - name: download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: job1-artifact
+          path: .
       - name: installing node 20
         uses: actions/setup-node@v2
         with:
           node-version: '20'
       - name: install npm modules for ecs
         run: |
+          ls -la
           node -v
           cd ecs
           npm install
@@ -80,13 +101,3 @@ jobs:
           cd ecs
           npx cdk bootstrap
           npx cdk deploy --no-rollback --require-approval never
-      - name: destroy cdk
-        run: |
-          cd ecs
-          npx cdk destroy --force
-      # - name: check cdk version details
-      #   run: |
-      #     node -v
-      #     npm -v
-      #     cdk --version
-      #     aws --version 
