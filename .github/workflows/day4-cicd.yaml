@@ -38,10 +38,14 @@ jobs:
           docker-compose ps
           sleep 1
           docker-compose logs
+      - name: Build an image from Dockerfile
+        run: |
+          cd python-app-secret
+          docker build -t wallys:bmov${{ github.sha }} .
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'wallys:bmov1'
+          image-ref: 'wallys:bmov${{ github.sha }}'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
