@@ -33,7 +33,7 @@ jobs:
       - name: verify github code
         run: |
           ls -ltra
-          cd python-app-secret
+          # cd python-app-secret
           docker-compose up -d
           sleep 2
           docker-compose ps
@@ -41,12 +41,12 @@ jobs:
           docker-compose logs
       - name: Build an image from Dockerfile
         run: |
-          cd python-app-secret
-          docker build -t docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }} .
+          # cd python-app-secret
+          docker build -t docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallybmoweb:bmov${{ github.sha }} .
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }}'
+          image-ref: 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallybmoweb:bmov${{ github.sha }}'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
@@ -60,7 +60,7 @@ jobs:
       - name: pushing image to docker hub 
         run: |
           echo "please wait while image is getting pushed"
-          docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallys:bmov${{ github.sha }}
+          docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/wallybmoweb:bmov${{ github.sha }}
       - name: upload artifacts # to save and use artifacts in the next job
         uses: actions/upload-artifact@v4
         with:
@@ -100,5 +100,5 @@ jobs:
       - name: cdk deploy esc code
         run: |
           cd ecs
-          npx cdk bootstrap
-          npx cdk deploy --no-rollback --require-approval never
+          # npx cdk bootstrap
+          npx cdk deploy --context imageTag=${{ github.sha }} --require-approval never
